@@ -2,4 +2,5 @@
 *.pyc
 *.pdf
 *.txt
+!requirements.txt
 
