@@ -34,7 +34,7 @@ class Truck(BaseCar):
             self.body_length = float(body_length)
 
     def get_body_volume(self):
-        return self.body_length * self.body_height * self.body_width
+        return self.body_width * self.body_height * self.body_length
 
 
 class SpecMachine(BaseCar):
@@ -44,12 +44,18 @@ class SpecMachine(BaseCar):
 
 
 def get_car_list(filename):
+    car_list = []
     with open(filename) as f:
         reader = csv.reader(f, delimiter=';')
         next(reader)
         for row in reader:
-            print(row)
-
-
-if __name__ == '__main__':
-    get_car_list('coursera_week3_cars.csv')
+            try:
+                if row[0] == 'car':
+                    car_list.append(Car(row[0], row[3], row[1], row[5], row[2]))
+                elif row[0] == 'truck':
+                    car_list.append(Truck(row[0], row[3], row[1], row[5], row[4]))
+                elif row[0] == 'spec_machine':
+                    car_list.append(SpecMachine(row[0], row[3], row[1], row[5], row[6]))
+            except IndexError:
+                pass
+    return car_list
