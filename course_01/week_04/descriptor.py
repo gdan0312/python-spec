@@ -23,4 +23,3 @@ if __name__ == '__main__':
     account = Account(0.1)
     account.amount = 100
     print(account.amount)
-
