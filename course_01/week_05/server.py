@@ -8,7 +8,7 @@ class ClientServerProtocol(asyncio.Protocol):
         self.transport = transport
 
     def data_received(self, data):
-        resp = self.process_data(data.decode())
+        resp = self.process_data(data.decode().strip())
         self.transport.write(resp.encode())
 
     def process_data(self, data):
@@ -26,13 +26,14 @@ class ClientServerProtocol(asyncio.Protocol):
             return 'error\nwrong command\n\n'
 
     def get_metrics(self, key):
-        if key == '*':
-            return 'ok\n\n'
-        if key not in ClientServerProtocol.metrics:
-            return 'ok\n\n'
         resp = 'ok'
-        for tuple_ in ClientServerProtocol.metrics[key]:
-            resp += '\n{key} {value} {timestamp}'.format(key=key, value=tuple_[1], timestamp=tuple_[0])
+        if key == '*':
+            for k, v in ClientServerProtocol.metrics.items():
+                for metric in v:
+                    resp += '\n{key} {value} {timestamp}'.format(key=k, value=metric[1], timestamp=metric[0])
+        elif key in ClientServerProtocol.metrics:
+            for metric in ClientServerProtocol.metrics[key]:
+                resp += '\n{key} {value} {timestamp}'.format(key=key, value=metric[1], timestamp=metric[0])
         resp += '\n\n'
         return resp
 
@@ -48,7 +49,3 @@ def run_server(host, port):
     server.close()
     loop.run_until_complete(server.wait_closed())
     loop.close()
-
-
-if __name__ == '__main__':
-    run_server('127.0.0.1', 8888)
