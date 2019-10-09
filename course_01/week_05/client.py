@@ -9,10 +9,41 @@ class Client:
         self.timeout = timeout
 
     def get(self, key):
-        pass
+        request = 'get {key}\n'.format(key=key)
+        with socket.create_connection((self.host, self.port), self.timeout) as sock:
+            try:
+                sock.sendall(request.encode())
+                data = sock.recv(1024).decode().strip()
+                return self.parse(data)
+            except socket.timeout:
+                raise ClientError('timeout error')
+            except socket.error as err:
+                raise ClientError('socket error:', err)
 
     def put(self, name, value, timestamp=None):
-        pass
+        request = 'put {name} {value} {timestamp}\n'.format(name=name, value=value,
+                                                            timestamp=timestamp or str(int(time.time())))
+        with socket.create_connection((self.host, self.port), self.timeout) as sock:
+            try:
+                sock.sendall(request.encode())
+                sock.recv(1024).decode()
+            except socket.timeout:
+                raise ClientError('timeout error')
+            except socket.error as err:
+                raise ClientError('socket error:', err)
+
+    def parse(self, data):
+        metrics = {}
+        try:
+            for line in data.split('\n')[1:]:
+                name, value, timestamp = line.split(' ')
+                if name not in metrics:
+                    metrics[name] = [(int(timestamp), float(value))]
+                else:
+                    metrics[name].append((int(timestamp), float(value)))
+        except ValueError as err:
+            raise ClientError('parsing error:', err)
+        return metrics
 
 
 class ClientError(Exception):

@@ -49,3 +49,7 @@ def run_server(host, port):
     server.close()
     loop.run_until_complete(server.wait_closed())
     loop.close()
+
+
+if __name__ == '__main__':
+    run_server('0.0.0.0', 8888)
