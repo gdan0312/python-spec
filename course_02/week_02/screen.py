@@ -12,42 +12,65 @@ class Color:
     WHITE = (255, 255, 255)
     WET_ASPHALT = (50, 50, 50)
     PURPLE = (128, 128, 255)
+    RED = (255, 50, 50, 255)
 
 
 class Vec2d:
+    """
+    Класс двумерного вектора
+    """
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def __add__(self, other):
+        """
+        Суииа векторов
+        """
         return self.x + other.x, self.y + other.y
 
     def __sub__(self, other):
+        """
+        Разность векторов
+        """
         return self.x - other.x, self.y - other.y
 
     def __mul__(self, k):
+        """
+        Умножение вектора на число
+        """
         return self.x * k, self.y * k
 
     def __len__(self):
+        """
+        Длина вектора
+        """
         return int(math.sqrt(self.x * self.x + self.y * self.y))
 
-    def int_pair(self):
+    def int_pair(self) -> Tuple[int, int]:
+        """
+        Получение текущих координат вектора
+        :return: кортеж из двух целых чисел - координат вектора
+        """
         return int(self.x), int(self.y)
 
 
 class Polyline:
+    """
+    Класс ломаной линии
+    """
     def __init__(self):
         self.points = []
         self.speeds = []
 
     def add_point(self, pos: Tuple[float, float]) -> None:
         """
-        Добавление в ломанную точки с ее координатами и скоростью
+        Добавление в ломаную точки с ее координатами и скоростью
         """
         self.points.append(Vec2d(x=pos[0], y=pos[1]))
         self.speeds.append((random.random() * 2, random.random() * 2))
 
-    def draw_points(self, display, style='points', width=3):
+    def draw_points(self, display, style='points', width=3) -> None:
         """
         Отрисовка точек на экране
         """
@@ -71,10 +94,15 @@ class Screen:
         self.__steps = 35
         self.__knot = Knot()
 
-    def run(self):
+    def run(self) -> None:
+        """
+        Запуск программы
+        """
         while self.__working:
             for event in pygame.event.get():
                 self.__event_handler(event)
+            if self.__show_help:
+                self.__draw_help()
 
             pygame.display.flip()
 
@@ -119,6 +147,18 @@ class Screen:
         self.__display.fill(Color.WET_ASPHALT)
         font1 = pygame.font.SysFont(name='courier', size=24)
         font2 = pygame.font.SysFont(name='serif', size=24)
+        data = [
+            ['F1', 'Show help'],
+            ['R', 'Restart'],
+            ['P', 'Pause/Play'],
+            ['Num+', 'More points'],
+            ['Num-', 'Less points'],
+            ['', ''],
+            [str(self.__steps), 'Current points']
+        ]
+        #  рисуем красную рамку вокруг экрана
+        coords = [(0, 0), (SCREEN_DIM[0], 0), (SCREEN_DIM[0], SCREEN_DIM[1]), (0, SCREEN_DIM[1])]
+        pygame.draw.lines(self.__display, Color.RED, True, coords, 5)
 
 
 if __name__ == '__main__':
