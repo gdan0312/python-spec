@@ -25,7 +25,7 @@ class Vec2d:
 
     def __add__(self, other):
         """
-        Суииа векторов
+        Сумма векторов
         """
         return self.x + other.x, self.y + other.y
 
@@ -70,16 +70,38 @@ class Polyline:
         self.points.append(Vec2d(x=pos[0], y=pos[1]))
         self.speeds.append((random.random() * 2, random.random() * 2))
 
+    def set_points(self) -> None:
+        """
+        Перерасчет координат опорных точек
+        """
+        for p in range(len(self.points)):
+            self.points[p] = self.points[p] + self.speeds[p]
+            if self.points[p][0] > SCREEN_DIM[0] or self.points[p][0] < 0:
+                self.speeds[p] = (-self.speeds[p][0], self.speeds[p][1])
+            if self.points[p][1] > SCREEN_DIM[1] or self.points[p][1] < 0:
+                self.speeds[p] = (self.speeds[p][0], -self.speeds[p][1])
+
     def draw_points(self, display, style='points', width=3) -> None:
         """
         Отрисовка точек на экране
         """
-        pass
+        if style == 'line':
+            for p_n in range(-1, len(self.points) - 1):
+                pygame.draw.line(display,
+                                 Color.WHITE,
+                                 self.points[p_n].int_pair(),
+                                 self.points[p_n + 1].int_pair(),
+                                 width)
+        else:
+            for p in self.points:
+                pygame.draw.circle(display, Color.WHITE, p.int_pair(), width)
 
 
 class Knot(Polyline):
     def __init__(self):
         super().__init__()
+
+    def get_knot(self, count):
         pass
 
 
@@ -104,6 +126,8 @@ class Screen:
             if self.__show_help:
                 self.__draw_help()
 
+            self.__knot.draw_points(self.__display)
+
             pygame.display.flip()
 
         pygame.display.quit()
@@ -112,16 +136,16 @@ class Screen:
 
     def __event_handler(self, event) -> None:
         """
-        Обработка события нажатия клавиши на клавитатуре или щелчка мыши
+        Обработка события нажатия клавиши на клавиатуре или щелчка мыши
         """
         if event.type == pygame.QUIT:
             self.__quit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.__quit()
-            if event.key == pygame.K_PLUS:
+            if event.key == pygame.K_KP_PLUS:
                 self.__steps += 1
-            if event.key == pygame.K_MINUS:
+            if event.key == pygame.K_KP_MINUS:
                 self.__steps -= 1 if self.__steps > 1 else 0
             if event.key == pygame.K_r:
                 self.__knot.points = []
@@ -145,8 +169,8 @@ class Screen:
         Отрисовка окна справки программы
         """
         self.__display.fill(Color.WET_ASPHALT)
-        font1 = pygame.font.SysFont(name='courier', size=24)
-        font2 = pygame.font.SysFont(name='serif', size=24)
+        font1 = pygame.font.SysFont('courier', 24)
+        font2 = pygame.font.SysFont('serif', 24)
         data = [
             ['F1', 'Show help'],
             ['R', 'Restart'],
@@ -159,6 +183,10 @@ class Screen:
         #  рисуем красную рамку вокруг экрана
         coords = [(0, 0), (SCREEN_DIM[0], 0), (SCREEN_DIM[0], SCREEN_DIM[1]), (0, SCREEN_DIM[1])]
         pygame.draw.lines(self.__display, Color.RED, True, coords, 5)
+        #  выводим текст окна помощи
+        for i, text in enumerate(data):
+            self.__display.blit(font1.render(text[0], True, Color.PURPLE), (100, 100 + 30 * i))
+            self.__display.blit(font2.render(text[1], True, Color.PURPLE), (200, 100 + 30 * i))
 
 
 if __name__ == '__main__':
