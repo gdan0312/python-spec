@@ -119,6 +119,29 @@ class Knot(Polyline):
     def __get_knot(self):
         if len(self.points) < 3:
             return []
+        res = []
+        for i in range(-2, len(self.points) - 2):
+            ptn = [
+                (self.points[i] + self.points[i + 1]) * 0.5,
+                self.points[i + 1],
+                (self.points[i + 1] + self.points[i + 2]) * 0.5,
+            ]
+            res.extend(self.__get_points(ptn))
+        return res
+
+    def __get_points(self, base_points):
+        alpha = 1 / self.steps
+        res = []
+        for i in range(self.steps):
+            res.append(self.__get_point(base_points, i * alpha))
+        return res
+
+    def __get_point(self, points, alpha, deg=None):
+        if deg is None:
+            deg = len(points) - 1
+        if deg == 0:
+            return points[0]
+        return (points[deg] * alpha) + (self.__get_point(points, alpha, deg - 1) * (1 - alpha))
 
 
 class Screen:
