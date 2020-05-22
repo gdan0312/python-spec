@@ -5,15 +5,16 @@ from bs4 import BeautifulSoup
 
 def parse(path_to_file):
     with open(path_to_file, encoding='utf-8') as html_file:
-        n_headers, n_lists = 0, 0
         soup = BeautifulSoup(html_file, 'lxml')
         body = soup.find('div', id='bodyContent')
         n_images = len([img for img in body.find_all('img') if int(img.get('width', 0)) >= 200])
 
+        n_headers = 0
         for header in body.find_all(name=re.compile('^h[1-6]')):
             if header.find(text=re.compile('^[ETC]')):
                 n_headers += 1
 
+        n_lists = 0
         for list_ in body.find_all(['ul', 'ol']):
             if not list_.find_parent(name=re.compile('^[uo]l')):
                 n_lists += 1
