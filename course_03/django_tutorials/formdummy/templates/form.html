@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Форма отзыва</title>
+        <style>
+            * {outline: none;}
+        </style>
+    </head>
+    <body>
+        <h1>Форма отзыва</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="feedback-text">Отзыв:</label>
+            <input type="text" name="text" minlength="3" maxlength="10" id="feedback-text" required>
+            <label for="feedback-grade">Оценка:</label>
+            <input type="number" name="grade" id="feedback-grade" min="1" max="100" required>
+            <label for="feedback-image">Фото:</label>
+            <input type="file" name="image" id="feedback-image">
+            <input type="submit" id="feedback-submit" value="Отправить">
+        </form>
+        {{ text }}
+        {{ grade }}
+        {{ content }}
+    </body>
+</html>

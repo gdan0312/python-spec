@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'blog',
     'routing',
     'template',
+    'formdummy',
     'db'
 ]
 
