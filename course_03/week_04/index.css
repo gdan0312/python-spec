@@ -26,9 +26,3 @@ input[type="number"] {
 textarea {
     resize: none;
 }
-
-/* Граница для проверки */
-
-/*.block-avatar, .block-post, .block-tags, .navigation, .answer-form, .best-members {
-    border: solid 3px red;
-}*/
