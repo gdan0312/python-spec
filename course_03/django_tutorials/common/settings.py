@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'routing',
     'template',
     'formdummy',
+    'market',
     'db'
 ]
 

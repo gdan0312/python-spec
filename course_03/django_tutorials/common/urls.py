@@ -21,4 +21,6 @@ urlpatterns = [
     path('template/', include('template.urls')),
     path('blog/', include('blog.urls')),
     path('form/', include('formdummy.urls')),
+    path('form/', include('formdummy.urls')),
+    path('market/', include('market.urls'))
 ]
