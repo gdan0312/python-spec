@@ -6,7 +6,7 @@ from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 
 from .models import Item, Review
-from.schemas import ADD_ITEM_SCHEMA, POST_REVIEW_SCHEMA
+from .schemas import ADD_ITEM_SCHEMA, POST_REVIEW_SCHEMA
 
 
 class AddItemView(View):

@@ -15,10 +15,8 @@ ADD_ITEM_SCHEMA = {
         'price': {
             'type': ['string', 'integer'],
             'minimum': 1,
-            'minLength': 1,
             'maximum': 1000000,
-            'maxLength': 7,
-            'pattern': r'^\d+$'
+            'pattern': r'^\d{1,7}$'
         }
     },
     'required': ['title', 'description', 'price']
@@ -36,10 +34,8 @@ POST_REVIEW_SCHEMA = {
         'grade': {
             'type': ['string', 'integer'],
             'minimum': 1,
-            'minLength': 1,
             'maximum': 10,
-            'maxLength': 2,
-            'pattern': r'^\d+$'
+            'pattern': r'^\d{1,2}$'
         }
     },
     'required': ['text', 'grade']
